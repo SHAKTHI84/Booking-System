@@ -48,7 +48,7 @@ This guide helps you deploy the Ticket Booking System.
 4.  **Environment Variables**:
     - Click **"Show advanced"** or go to "Site settings" -> "Environment variables" later.
     - Key: `VITE_API_URL`
-    - Value: `https://ticket-system-api.onrender.com` (The URL you got from Part 1).
+    - Value: `https://booking-system-ajy9.onrender.com`
 
 5.  Click **Deploy Site**.
 
