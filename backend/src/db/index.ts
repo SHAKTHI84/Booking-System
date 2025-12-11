@@ -136,6 +136,44 @@ export const initializeDB = async () => {
                     ['Super Admin', 'ss0068@srmist.edu.in', hashedPassword, 'ADMIN']);
                 console.log('✅ Admin seeded.');
             }
+
+            // Check and Seed Seats
+            const seatsRes = await query('SELECT count(*) FROM seats');
+            if (parseInt(seatsRes.rows[0].count) === 0) {
+                console.log('🌱 Seeding Seats...');
+
+                // 1. Movie Seats (Avengers)
+                const show1 = await query("SELECT id FROM shows WHERE type = 'SHOW' LIMIT 1");
+                if (show1.rows.length > 0) {
+                    const sId = show1.rows[0].id;
+                    const rows = ['A', 'B', 'C', 'D', 'E'];
+                    for (const row of rows) {
+                        for (let i = 1; i <= 10; i++) {
+                            await query(`INSERT INTO seats (show_id, label, status) VALUES ($1, $2, 'AVAILABLE')`, [sId, `${row}${i}`]);
+                        }
+                    }
+                }
+
+                // 2. Bus Seats (Bangalore)
+                const show2 = await query("SELECT id FROM shows WHERE type = 'BUS' LIMIT 1");
+                if (show2.rows.length > 0) {
+                    const bId = show2.rows[0].id;
+                    for (let i = 1; i <= 15; i++) {
+                        await query(`INSERT INTO seats (show_id, label, status) VALUES ($1, $2, 'AVAILABLE')`, [bId, `L${i}`]);
+                        await query(`INSERT INTO seats (show_id, label, status) VALUES ($1, $2, 'AVAILABLE')`, [bId, `R${i}`]);
+                    }
+                }
+
+                // 3. Doctor Slots (Dr. Strange)
+                const show3 = await query("SELECT id FROM shows WHERE type = 'DOCTOR' LIMIT 1");
+                if (show3.rows.length > 0) {
+                    const dId = show3.rows[0].id;
+                    for (let i = 9; i < 19; i++) { // 9:00 to 18:00
+                        await query(`INSERT INTO seats (show_id, label, status) VALUES ($1, $2, 'AVAILABLE')`, [dId, `${i}:00`]);
+                    }
+                }
+                console.log('✅ Seats seeded.');
+            }
         } catch (err) {
             console.error('❌ Database Initialization Failed:', err);
         }
