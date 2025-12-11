@@ -22,12 +22,14 @@ app.get('/health', (req, res) => {
 });
 
 import apiRoutes from './routes/api';
+import authRoutes from './routes/auth';
 import { query, initializeDB } from './db';
 import swaggerUi from 'swagger-ui-express';
 import { specs } from './swagger';
 import { seedDataInternal } from './db/seedInternal';
 
 // Use Routes
+app.use('/auth', authRoutes);
 app.use('/api', apiRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 

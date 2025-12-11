@@ -7,6 +7,7 @@ exports.initializeDB = exports.getClient = exports.query = void 0;
 const pg_1 = require("pg");
 const dotenv_1 = __importDefault(require("dotenv"));
 const pg_mem_1 = require("pg-mem");
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 dotenv_1.default.config();
 const SCHEMA_SQL = `
 CREATE TABLE IF NOT EXISTS shows (
@@ -25,6 +26,15 @@ CREATE TABLE IF NOT EXISTS seats (
     user_id VARCHAR(255),
     expires_at TIMESTAMP,
     UNIQUE(show_id, label)
+);
+
+
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(20) NOT NULL DEFAULT 'USER' CHECK (role IN ('USER', 'ADMIN'))
 );
 
 CREATE INDEX IF NOT EXISTS idx_seats_show_id ON seats(show_id);
@@ -79,6 +89,14 @@ const initializeDB = async () => {
                     ('Dr. Strange (Cardiologist)', 'DOCTOR', NOW() + INTERVAL '3 days', 10);
                  `);
                 console.log('✅ Seed data inserted.');
+            }
+            // Check Admin Seed
+            const adminRes = await (0, exports.query)('SELECT count(*) FROM users WHERE email = $1', ['ss0068@srmist.edu.in']);
+            if (parseInt(adminRes.rows[0].count) === 0) {
+                console.log('🌱 Seeding Admin User...');
+                const hashedPassword = await bcryptjs_1.default.hash('Hello@2002', 10);
+                await (0, exports.query)('INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4)', ['Super Admin', 'ss0068@srmist.edu.in', hashedPassword, 'ADMIN']);
+                console.log('✅ Admin seeded.');
             }
         }
         catch (err) {

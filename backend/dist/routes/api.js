@@ -36,14 +36,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const showController = __importStar(require("../controllers/showController"));
 const bookingController = __importStar(require("../controllers/bookingController"));
+const auth_1 = require("../middleware/auth");
 const router = (0, express_1.Router)();
 // Shows
-router.post('/shows', showController.createShow);
-router.get('/shows', showController.getShows);
-router.get('/shows/:id', showController.getShow);
-router.delete('/shows/:id', showController.deleteShow);
+router.get('/shows', showController.getShows); // Public
+router.get('/shows/:id', showController.getShow); // Public
+router.post('/shows', auth_1.authenticateToken, auth_1.requireAdmin, showController.createShow); // Admin
+router.delete('/shows/:id', auth_1.authenticateToken, auth_1.requireAdmin, showController.deleteShow); // Admin
 // Bookings
-router.post('/bookings/hold', bookingController.holdSeats);
-router.post('/bookings/confirm', bookingController.confirmBooking);
-router.post('/bookings/reset', bookingController.resetBookings);
+router.post('/bookings/hold', auth_1.authenticateToken, bookingController.holdSeats); // Auth User
+router.post('/bookings/confirm', auth_1.authenticateToken, bookingController.confirmBooking); // Auth User
+router.post('/bookings/reset', auth_1.authenticateToken, auth_1.requireAdmin, bookingController.resetBookings); // Admin
 exports.default = router;

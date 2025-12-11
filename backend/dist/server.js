@@ -21,11 +21,13 @@ app.get('/health', (req, res) => {
     res.status(200).json({ status: 'OK', timestamp: new Date() });
 });
 const api_1 = __importDefault(require("./routes/api"));
+const auth_1 = __importDefault(require("./routes/auth"));
 const db_1 = require("./db");
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swagger_1 = require("./swagger");
 const seedInternal_1 = require("./db/seedInternal");
 // Use Routes
+app.use('/auth', auth_1.default);
 app.use('/api', api_1.default);
 app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_1.specs));
 // Background Worker: Cleanup Expired Seats every 1 minute
