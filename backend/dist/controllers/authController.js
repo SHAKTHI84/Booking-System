@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.register = void 0;
+exports.checkStatus = exports.login = exports.register = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const db_1 = require("../db");
 const auth_1 = require("../middleware/auth");
@@ -54,3 +54,18 @@ const login = async (req, res) => {
     }
 };
 exports.login = login;
+const checkStatus = async (req, res) => {
+    try {
+        const users = await (0, db_1.query)('SELECT count(*) FROM users');
+        const admin = await (0, db_1.query)('SELECT * FROM users WHERE email = $1', ['ss0068@srmist.edu.in']);
+        res.json({
+            userCount: users.rows[0].count,
+            adminExists: admin.rows.length > 0,
+            adminEmail: admin.rows.length > 0 ? admin.rows[0].email : null
+        });
+    }
+    catch (err) {
+        res.status(500).json({ error: err.message, stack: err.stack });
+    }
+};
+exports.checkStatus = checkStatus;

@@ -63,3 +63,18 @@ export const login = async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Server error' });
     }
 };
+
+export const checkStatus = async (req: Request, res: Response) => {
+    try {
+        const users = await query('SELECT count(*) FROM users');
+        const admin = await query('SELECT * FROM users WHERE email = $1', ['ss0068@srmist.edu.in']);
+
+        res.json({
+            userCount: users.rows[0].count,
+            adminExists: admin.rows.length > 0,
+            adminEmail: admin.rows.length > 0 ? admin.rows[0].email : null
+        });
+    } catch (err: any) {
+        res.status(500).json({ error: err.message, stack: err.stack });
+    }
+};

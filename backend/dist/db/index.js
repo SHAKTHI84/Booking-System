@@ -73,15 +73,43 @@ const initializeDB = async () => {
     if (!isMock) {
         console.log('🔄 Connecting to Real Database...');
         try {
-            await (0, exports.query)(SCHEMA_SQL);
+            // Execute Schema statements sequentially to ensure reliability
+            await (0, exports.query)(`
+                CREATE TABLE IF NOT EXISTS shows (
+                    id SERIAL PRIMARY KEY,
+                    name VARCHAR(255) NOT NULL,
+                    type VARCHAR(50) NOT NULL CHECK (type IN ('SHOW', 'BUS', 'DOCTOR')),
+                    start_time TIMESTAMP NOT NULL,
+                    total_seats INTEGER NOT NULL DEFAULT 0
+                );
+            `);
+            await (0, exports.query)(`
+                CREATE TABLE IF NOT EXISTS users (
+                    id SERIAL PRIMARY KEY,
+                    name VARCHAR(255) NOT NULL,
+                    email VARCHAR(255) UNIQUE NOT NULL,
+                    password VARCHAR(255) NOT NULL,
+                    role VARCHAR(20) NOT NULL DEFAULT 'USER' CHECK (role IN ('USER', 'ADMIN'))
+                );
+            `);
+            await (0, exports.query)(`
+                CREATE TABLE IF NOT EXISTS seats (
+                    id SERIAL PRIMARY KEY,
+                    show_id INTEGER REFERENCES shows(id) ON DELETE CASCADE,
+                    label VARCHAR(20) NOT NULL,
+                    status VARCHAR(20) NOT NULL DEFAULT 'AVAILABLE' CHECK (status IN ('AVAILABLE', 'PENDING', 'BOOKED')),
+                    user_id VARCHAR(255),
+                    expires_at TIMESTAMP,
+                    UNIQUE(show_id, label)
+                );
+            `);
+            await (0, exports.query)(`CREATE INDEX IF NOT EXISTS idx_seats_show_id ON seats(show_id);`);
+            await (0, exports.query)(`CREATE INDEX IF NOT EXISTS idx_seats_status ON seats(status);`);
             console.log('✅ Schema ensured.');
-            // Check if seeded
+            // Check if shows seeded
             const res = await (0, exports.query)('SELECT count(*) FROM shows');
             if (parseInt(res.rows[0].count) === 0) {
                 console.log('🌱 Database empty. Seeding defaults...');
-                // We can insert minimal defaults here if needed, 
-                // but for now let's just ensure the tables exist.
-                // A full seed script is better, but this handles the "fresh deploy" case.
                 await (0, exports.query)(`
                     INSERT INTO shows (name, type, start_time, total_seats) VALUES
                     ('Avengers: Secret Wars', 'SHOW', NOW() + INTERVAL '1 day', 50),

@@ -31,7 +31,11 @@ const Login = () => {
             login(res.data.token, res.data.user);
             navigate('/admin');
         } catch (err: any) {
-            setError('Demo Login Failed: ' + (err.response?.data?.error || 'Unknown'));
+            console.error('Demo Login Error:', err);
+            const status = err.response?.status;
+            const statusText = err.response?.statusText;
+            const dataError = err.response?.data?.error;
+            setError(`Demo Login Failed: ${dataError || statusText || 'Network Error'} (${status || 'No Status'})`);
         }
     };
 
