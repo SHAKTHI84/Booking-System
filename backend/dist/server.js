@@ -37,7 +37,7 @@ setInterval(async () => {
     try {
         const result = await (0, db_1.query)(`UPDATE seats 
        SET status = 'AVAILABLE', user_id = NULL, expires_at = NULL 
-       WHERE status = 'PENDING' AND expires_at < NOW()`);
+       WHERE status = 'PENDING' AND expires_at < $1`, [new Date()]);
         if (result && result.rowCount && result.rowCount > 0) {
             console.log(`[Cleanup] Released ${result.rowCount} expired seats.`);
         }
