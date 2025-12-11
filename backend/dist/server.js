@@ -27,7 +27,9 @@ const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swagger_1 = require("./swagger");
 const seedInternal_1 = require("./db/seedInternal");
 // Use Routes
-app.use('/api/auth', auth_1.default);
+// Mount on BOTH paths to handle successful/missing '/api' prefix in env vars
+app.use('/auth', auth_1.default); // For calls to base/auth
+app.use('/api/auth', auth_1.default); // For calls to base/api/auth
 app.use('/api', api_1.default);
 app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_1.specs));
 // Background Worker: Cleanup Expired Seats every 1 minute
