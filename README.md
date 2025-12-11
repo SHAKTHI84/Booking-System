@@ -87,9 +87,9 @@ npm run dev
 ## ☁️ Deployment
 
 ### Live Links
-- **Frontend**: [Active on Netlify](https://YOUR_NETLIFY_URL_HERE)
-- **Backend**: [Active on Render](https://booking-system-ajy9.onrender.com)
+- **Frontend**: [https://booking-system-1.netlify.app](https://booking-system-1.netlify.app) (or your specific Netlify URL)
+- **Backend**: [https://booking-system-ajy9.onrender.com](https://booking-system-ajy9.onrender.com)
 - **Database**: PostgreSQL on Render
 
 ### Deployment Guide
-For detailed steps on how this stack was deployed, refer to [DEPLOYMENT_NETLIFY.md](./DEPLOYMENT_NETLIFY.md) and [DEPLOYMENT_DB.md](./DEPLOYMENT_DB.md).
+For detailed steps on how this stack was deployed, refer to [DEPLOYMENT.md](./DEPLOYMENT.md).
