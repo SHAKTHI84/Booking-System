@@ -29,7 +29,7 @@ import { specs } from './swagger';
 import { seedDataInternal } from './db/seedInternal';
 
 // Use Routes
-app.use('/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api', apiRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
