@@ -2,21 +2,34 @@ import { useState } from 'react';
 import { useGlobal } from '../context/GlobalContext';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api';
+import { Eye, EyeOff, User, ShieldCheck } from 'lucide-react';
 
 const Login = () => {
     const { login } = useGlobal();
     const navigate = useNavigate();
+    const [role, setRole] = useState<'USER' | 'ADMIN'>('USER');
     const [form, setForm] = useState({ email: '', password: '' });
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             const res = await api.post('/auth/login', form);
+
+            // Optional: Check if the logged-in user actually matches the selected tab role
+            if (res.data.user.role !== role) {
+                setError(`Please login through the ${res.data.user.role === 'ADMIN' ? 'Admin' : 'User'} tab.`);
+                return;
+            }
+
             login(res.data.token, res.data.user);
-            navigate('/');
+            navigate(res.data.user.role === 'ADMIN' ? '/admin' : '/');
         } catch (err: any) {
-            setError(err.response?.data?.error || 'Login failed');
+            console.error('Login Error:', err);
+            const status = err.response?.status;
+            const url = err.config?.baseURL + err.config?.url;
+            setError(`Failed at ${url} (${status}) - ${err.message}`);
         }
     };
 
@@ -41,33 +54,101 @@ const Login = () => {
     return (
         <div style={{ maxWidth: '900px', margin: '4rem auto', display: 'flex', gap: '2rem', alignItems: 'stretch' }}>
 
-            {/* Left Side: Login Form */}
+            {/* Left Side: Login Form with Tabs */}
             <div className="glass-panel" style={{ flex: 1, padding: '2rem' }}>
-                <h1 style={{ fontSize: '2rem', marginBottom: '2rem', textAlign: 'center' }}>Login</h1>
+
+                {/* Role Tabs */}
+                <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', padding: '0.5rem', background: 'rgba(255,255,255,0.05)', borderRadius: '12px' }}>
+                    <button
+                        onClick={() => setRole('USER')}
+                        style={{
+                            flex: 1,
+                            padding: '0.8rem',
+                            borderRadius: '8px',
+                            border: 'none',
+                            background: role === 'USER' ? '#3b82f6' : 'transparent',
+                            color: role === 'USER' ? 'white' : '#94a3b8',
+                            fontWeight: 'bold',
+                            cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                            transition: 'all 0.3s'
+                        }}
+                    >
+                        <User size={18} /> User Login
+                    </button>
+                    <button
+                        onClick={() => setRole('ADMIN')}
+                        style={{
+                            flex: 1,
+                            padding: '0.8rem',
+                            borderRadius: '8px',
+                            border: 'none',
+                            background: role === 'ADMIN' ? '#ec4899' : 'transparent',
+                            color: role === 'ADMIN' ? 'white' : '#94a3b8',
+                            fontWeight: 'bold',
+                            cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                            transition: 'all 0.3s'
+                        }}
+                    >
+                        <ShieldCheck size={18} /> Admin Login
+                    </button>
+                </div>
+
+                <h1 style={{ fontSize: '2rem', marginBottom: '2rem', textAlign: 'center' }}>
+                    {role === 'ADMIN' ? 'Admin Portal' : 'Welcome Back'}
+                </h1>
+
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <input
                         type="email"
-                        placeholder="Email"
+                        placeholder={role === 'ADMIN' ? "Admin Email" : "User Email"}
                         className="input-field"
                         value={form.email}
                         onChange={e => setForm({ ...form, email: e.target.value })}
                         required
                     />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        className="input-field"
-                        value={form.password}
-                        onChange={e => setForm({ ...form, password: e.target.value })}
-                        required
-                    />
-                    <button type="submit" className="btn-primary">Login</button>
-                    {error && <p style={{ color: '#ef4444' }}>{error}</p>}
+
+                    <div style={{ position: 'relative' }}>
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Password"
+                            className="input-field"
+                            style={{ width: '100%' }}
+                            value={form.password}
+                            onChange={e => setForm({ ...form, password: e.target.value })}
+                            required
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            style={{
+                                position: 'absolute',
+                                right: '1rem',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                background: 'none',
+                                border: 'none',
+                                color: '#94a3b8',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        </button>
+                    </div>
+
+                    <button type="submit" className="btn-primary" style={{ background: role === 'ADMIN' ? '#ec4899' : '#3b82f6' }}>
+                        {role === 'ADMIN' ? 'Access Dashboard' : 'Login'}
+                    </button>
+
+                    {error && <div style={{ color: '#ef4444', textAlign: 'center', background: 'rgba(239, 68, 68, 0.1)', padding: '0.5rem', borderRadius: '4px' }}>{error}</div>}
                 </form>
 
-                <p style={{ marginTop: '1rem', opacity: 0.7, textAlign: 'center' }}>
-                    Don't have an account? <Link to="/register" style={{ color: '#38bdf8' }}>Register</Link>
-                </p>
+                {role === 'USER' && (
+                    <p style={{ marginTop: '1rem', opacity: 0.7, textAlign: 'center' }}>
+                        New here? <Link to="/register" style={{ color: '#38bdf8' }}>Create an Account</Link>
+                    </p>
+                )}
             </div>
 
             {/* Right Side: Demo Mode */}
