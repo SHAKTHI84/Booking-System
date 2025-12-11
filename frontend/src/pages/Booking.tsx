@@ -157,9 +157,21 @@ const Booking = () => {
                         <div className="theater-container">
                             {show.type === 'SHOW' && (
                                 <div style={{
-                                    width: '80%', height: '8px', background: '#cbd5e1', borderRadius: '4px',
-                                    marginBottom: '3rem', boxShadow: '0 0 20px rgba(255,255,255,0.3)',
-                                    textAlign: 'center', fontSize: '0.7rem', color: '#94a3b8', paddingTop: '10px'
+                                    width: '80%',
+                                    height: '60px',
+                                    marginBottom: '3rem',
+                                    borderTop: '4px solid rgba(255,255,255,0.2)',
+                                    borderRadius: '50% 50% 0 0 / 20px 20px 0 0',
+                                    background: 'linear-gradient(to bottom, rgba(255,255,255,0.1), transparent)',
+                                    boxShadow: '0 -20px 30px rgba(255,255,255,0.05)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    color: 'rgba(255,255,255,0.4)',
+                                    letterSpacing: '0.5rem',
+                                    fontSize: '0.9rem',
+                                    fontWeight: 'bold',
+                                    transform: 'perspective(500px) rotateX(20deg)'
                                 }}>
                                     SCREEN
                                 </div>

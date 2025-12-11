@@ -1,6 +1,6 @@
 const https = require('https');
 
-const baseUrl = 'https://booking-system-ajy9.onrender.com/api';
+const baseUrl = 'https://booking-system-ajy9.onrender.com';
 
 function request(method, path) {
     return new Promise((resolve, reject) => {
@@ -25,18 +25,13 @@ async function diagnose() {
 
     try {
         // 1. Check DB Counts
-        console.log('\n--- DB Status (/api/debug/status) ---');
-        const status = await request('GET', '/debug/status');
+        console.log('\n--- Health Check (/health) ---');
+        const status = await request('GET', '/health');
         console.log(JSON.stringify(status, null, 2));
 
-        // 2. List All Shows
-        console.log('\n--- All Shows (/api/shows) ---');
-        const shows = await request('GET', '/shows');
-        console.log(JSON.stringify(shows, null, 2));
-
-        // 3. Trigger Seed
-        console.log('\n--- Triggering Force Seed (/api/debug/seed) ---');
-        const seed = await request('GET', '/debug/seed');
+        // 2. Trigger Seed
+        console.log('\n--- Triggering Emergency Fix (/emergency-fix) ---');
+        const seed = await request('GET', '/emergency-fix');
         console.log(JSON.stringify(seed, null, 2));
 
     } catch (err) {

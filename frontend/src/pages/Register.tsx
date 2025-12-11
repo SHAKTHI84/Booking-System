@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useGlobal } from '../context/GlobalContext';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api';
+import { Eye, EyeOff } from 'lucide-react';
 
 const Register = () => {
     const { login } = useGlobal();
     const navigate = useNavigate();
     const [form, setForm] = useState({ name: '', email: '', password: '' });
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -56,15 +58,37 @@ const Register = () => {
                         onChange={e => setForm({ ...form, email: e.target.value })}
                         required
                     />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        className="input-field"
-                        value={form.password}
-                        onChange={e => setForm({ ...form, password: e.target.value })}
-                        required
-                        minLength={6}
-                    />
+                    <div style={{ position: 'relative' }}>
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Password"
+                            className="input-field"
+                            value={form.password}
+                            onChange={e => setForm({ ...form, password: e.target.value })}
+                            required
+                            minLength={6}
+                            style={{ width: '100%' }}
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            style={{
+                                position: 'absolute',
+                                right: '10px',
+                                top: '50%',
+                                transform: 'translateY(-50%)',
+                                background: 'transparent',
+                                border: 'none',
+                                color: 'rgba(255,255,255,0.5)',
+                                cursor: 'pointer',
+                                padding: 0,
+                                display: 'flex',
+                                alignItems: 'center'
+                            }}
+                        >
+                            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        </button>
+                    </div>
                     <button type="submit" className="btn-primary">Create Account</button>
                     {error && <p style={{ color: '#ef4444' }}>{error}</p>}
                 </form>

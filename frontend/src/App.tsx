@@ -23,7 +23,18 @@ const Navbar = () => {
             <div style={{ marginLeft: '1rem', fontSize: '0.9rem', opacity: 0.8 }}>
               Hi, {user.name.split(' ')[0]}
             </div>
-            <button onClick={logout} className="btn-ghost" style={{ color: '#ef4444' }}>Logout</button>
+            <button
+              onClick={logout}
+              className="btn-ghost"
+              style={{
+                color: '#ef4444',
+                border: '1px solid rgba(239, 68, 68, 0.5)',
+                background: 'rgba(239, 68, 68, 0.1)',
+                padding: '0.4rem 1rem'
+              }}
+            >
+              Logout
+            </button>
           </>
         ) : (
           <>
