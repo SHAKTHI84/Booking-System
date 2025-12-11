@@ -1,7 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.seedDataInternal = void 0;
 const index_1 = require("./index");
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const seedDataInternal = async () => {
     try {
         // Check if data exists
@@ -45,6 +49,13 @@ const seedDataInternal = async () => {
             await (0, index_1.query)('INSERT INTO seats (show_id, label, status) VALUES ($1, $2, $3)', [docId, `${i}:00`, 'AVAILABLE']);
         }
         console.log('Seeding complete.');
+        // Seed Admin for Mock Mode
+        const adminRes = await (0, index_1.query)('SELECT count(*) FROM users WHERE email = $1', ['ss0068@srmist.edu.in']);
+        if (parseInt(adminRes.rows[0].count) === 0) {
+            console.log('Seeding Mock Admin...');
+            const hashedPassword = await bcryptjs_1.default.hash('Hello@2002', 10);
+            await (0, index_1.query)('INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4)', ['Super Admin', 'ss0068@srmist.edu.in', hashedPassword, 'ADMIN']);
+        }
     }
     catch (err) {
         console.error('Error seeding data:', err);

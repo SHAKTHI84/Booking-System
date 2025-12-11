@@ -1,4 +1,5 @@
 import { query } from './index';
+import bcrypt from 'bcryptjs';
 
 export const seedDataInternal = async () => {
     try {
@@ -51,6 +52,15 @@ export const seedDataInternal = async () => {
         }
 
         console.log('Seeding complete.');
+
+        // Seed Admin for Mock Mode
+        const adminRes = await query('SELECT count(*) FROM users WHERE email = $1', ['ss0068@srmist.edu.in']);
+        if (parseInt(adminRes.rows[0].count) === 0) {
+            console.log('Seeding Mock Admin...');
+            const hashedPassword = await bcrypt.hash('Hello@2002', 10);
+            await query('INSERT INTO users (name, email, password, role) VALUES ($1, $2, $3, $4)',
+                ['Super Admin', 'ss0068@srmist.edu.in', hashedPassword, 'ADMIN']);
+        }
     } catch (err) {
         console.error('Error seeding data:', err);
     }
