@@ -39,17 +39,4 @@ This guide helps you deploy the Ticket Booking System.
     - Click **Add new site** -> **Import from existing project**.
     - Connect **GitHub**.
     - Pick your repository.
-
-3.  **Build Settings** (Crucial!):
-    - **Base directory**: `frontend`
-    - **Build command**: `npm run build`
-    - **Publish directory**: `dist`
-
-4.  **Environment Variables**:
-    - Click **"Show advanced"** or go to "Site settings" -> "Environment variables" later.
-    - Key: `VITE_API_URL`
-    - Value: `https://booking-system-ajy9.onrender.com`
-
-5.  Click **Deploy Site**.
-
-✅ **Done!** Your Netlify URL (e.g., `https://my-ticket-app.netlify.app`) is now live.
+3.  Click **New +** ->
