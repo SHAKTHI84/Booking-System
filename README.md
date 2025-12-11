@@ -2,9 +2,6 @@
 
 A full-stack Ticket Booking System with high-concurrency seat handling, built with Node.js, Express, PostgreSQL, and React.
 
-> [!NOTE]
-> **Demo Mode Enabled**: By default, this project uses an **In-Memory Database Connection (pg-mem)** so you can run it immediately without installing PostgreSQL.
-> To use a real database, set `USE_MOCK_DB=false` in `backend/.env`.
 
 ## 🚀 Features
 
