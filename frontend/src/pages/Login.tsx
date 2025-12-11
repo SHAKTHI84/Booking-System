@@ -36,10 +36,11 @@ const Login = () => {
     };
 
     return (
-        <div style={{ maxWidth: '400px', margin: '4rem auto', textAlign: 'center' }}>
-            <h1 style={{ fontSize: '2rem', marginBottom: '2rem' }}>Login</h1>
+        <div style={{ maxWidth: '900px', margin: '4rem auto', display: 'flex', gap: '2rem', alignItems: 'stretch' }}>
 
-            <div className="glass-panel" style={{ padding: '2rem' }}>
+            {/* Left Side: Login Form */}
+            <div className="glass-panel" style={{ flex: 1, padding: '2rem' }}>
+                <h1 style={{ fontSize: '2rem', marginBottom: '2rem', textAlign: 'center' }}>Login</h1>
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <input
                         type="email"
@@ -61,28 +62,33 @@ const Login = () => {
                     {error && <p style={{ color: '#ef4444' }}>{error}</p>}
                 </form>
 
-                <p style={{ marginTop: '1rem', opacity: 0.7 }}>
+                <p style={{ marginTop: '1rem', opacity: 0.7, textAlign: 'center' }}>
                     Don't have an account? <Link to="/register" style={{ color: '#38bdf8' }}>Register</Link>
                 </p>
             </div>
 
-            {/* Demo Mode Section */}
-            <div style={{ marginTop: '3rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem' }}>
-                <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: '#fbbf24' }}>Demo Mode</h2>
-                <p style={{ marginBottom: '1rem', opacity: 0.8 }}>
-                    Click here to view the full project without logging in or registering.
+            {/* Right Side: Demo Mode */}
+            <div className="glass-panel" style={{ flex: 1, padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'rgba(251, 191, 36, 0.05)', border: '1px solid rgba(251, 191, 36, 0.3)' }}>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🚀</div>
+                <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem', color: '#fbbf24', textAlign: 'center' }}>Demo Access</h2>
+                <p style={{ marginBottom: '2rem', opacity: 0.9, textAlign: 'center', lineHeight: '1.6' }}>
+                    Recruiter or Visitor? <br />
+                    Click below to access the <b>Full Project</b> (Admin Level) instantly without registration.
                 </p>
                 <button
                     onClick={handleDemoMode}
                     className="btn-ghost"
                     style={{
-                        border: '1px solid #fbbf24',
-                        padding: '0.8rem 2rem',
+                        border: '2px solid #fbbf24',
+                        padding: '1rem 2rem',
                         color: '#fbbf24',
-                        background: 'rgba(251, 191, 36, 0.1)'
+                        fontWeight: 'bold',
+                        fontSize: '1.1rem',
+                        background: 'rgba(251, 191, 36, 0.1)',
+                        width: '100%'
                     }}
                 >
-                    Enter as Guest (Full Access)
+                    Enter Demo Mode
                 </button>
             </div>
         </div>
