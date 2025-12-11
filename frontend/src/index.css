@@ -160,3 +160,37 @@ a {
     font-size: 0.8rem;
   }
 }
+
+/* Admin Layout */
+.admin-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.admin-event-card {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+    /* Stack vertically */
+  }
+
+  .admin-event-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .admin-event-card>div:last-child {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    /* Buttons to right */
+  }
+}

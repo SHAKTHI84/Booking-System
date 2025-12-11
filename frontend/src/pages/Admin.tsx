@@ -43,7 +43,7 @@ const Admin = () => {
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
             <h1 style={{ fontSize: '2rem', marginBottom: '1.5rem' }}>Admin Dashboard</h1>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+            <div className="admin-layout">
                 {/* Create Form */}
                 <div className="glass-panel" style={{ padding: '2rem', height: 'fit-content' }}>
                     <h2 style={{ marginBottom: '1rem' }}>Create New Event</h2>
@@ -107,12 +107,12 @@ const Admin = () => {
                     <h2 style={{ marginBottom: '1rem' }}>Existing Events</h2>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         {shows.map(show => (
-                            <div key={show.id} className="glass-panel" style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div key={show.id} className="glass-panel admin-event-card">
                                 <div>
                                     <div style={{ fontWeight: 'bold' }}>{show.name}</div>
                                     <div style={{ fontSize: '0.8rem', opacity: 0.7 }}>{new Date(show.start_time).toLocaleDateString()}</div>
                                 </div>
-                                <div style={{ display: 'flex', gap: '1rem' }}>
+                                <div>
                                     <button
                                         className="btn-ghost"
                                         style={{ color: '#fbbf24', padding: '0.5rem', cursor: 'pointer', border: 'none', background: 'transparent' }}
