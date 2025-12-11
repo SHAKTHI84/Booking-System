@@ -21,6 +21,10 @@ app.get('/health', (req, res) => {
     res.status(200).json({ status: 'OK', timestamp: new Date() });
 });
 
+// Emergency Seed Route (Direct Mount to bypass router/api issues)
+import { forceSeedSeats } from './controllers/debugController';
+app.get('/emergency-fix', forceSeedSeats);
+
 import apiRoutes from './routes/api';
 import authRoutes from './routes/auth';
 import debugRoutes from './routes/debug';

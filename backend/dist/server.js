@@ -20,6 +20,9 @@ app.use((0, morgan_1.default)('dev'));
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'OK', timestamp: new Date() });
 });
+// Emergency Seed Route (Direct Mount to bypass router/api issues)
+const debugController_1 = require("./controllers/debugController");
+app.get('/emergency-fix', debugController_1.forceSeedSeats);
 const api_1 = __importDefault(require("./routes/api"));
 const auth_1 = __importDefault(require("./routes/auth"));
 const debug_1 = __importDefault(require("./routes/debug"));
