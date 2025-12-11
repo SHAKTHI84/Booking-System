@@ -16,9 +16,8 @@ app.use(helmet());
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Health Check
 app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'OK', timestamp: new Date() });
+    res.status(200).json({ status: 'OK', version: 'v1.5-emergency', timestamp: new Date() });
 });
 
 // Emergency Seed Route (Direct Mount to bypass router/api issues)
