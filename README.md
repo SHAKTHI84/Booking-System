@@ -8,21 +8,30 @@ A full-stack Ticket Booking System with high-concurrency seat handling, built wi
 
 ## 🚀 Features
 
-- **Admin Dashboard**: Create Shows, Bus Trips, and Doctor Appointments.
-- **Visual Seat Booking**: Interactive seat grid with real-time status.
-- **Concurrency Handling**: row-level locking (`SELECT ... FOR UPDATE`) prevents double bookings.
-- **Booking Flow**: 
-    1. Select Seats (Local State)
-    2. Hold Seats (Server-side Lock + Expiry)
-    3. Confirm Booking (Finalize)
-- **Automatic Expiry**: Expired pending bookings are released automatically.
-- **Premium UI**: Glassmorphism design with React + Vite.
+### ✅ Core Booking Features
+- **Visual Seat Selection**: Interactive grid for Movies, lower/upper berths for Buses, and time slots for Doctors.
+- **Concurrency Protection**: **Pessimistic Locking** (`SELECT ... FOR UPDATE`) guarantees no double-booking even under heavy load.
+- **Real-Time Availability**: Intelligent state management reveals booked/locked seats instantly.
+- **Expiry System**: Unpaid seats held for 10 minutes are automatically released by a background cron job.
+
+### 🛡️ Admin & Security
+- **Role-Based Access Control**:
+    - **User**: Search shows, view availability, book tickets.
+    - **Admin**: Create new shows, manage inventory, view system stats.
+- **JWT Authentication**: Secure login/registration flow with BCrypt password hashing.
+- **Demo Mode**: One-click protected access for guest evaluation.
+
+### 🎨 UI/UX
+- **Glassmorphism Design**: Modern, translucent UI aesthetics.
+- **Responsive Layout**: Fully optimized for Desktop, Tablet, and Mobile.
+- **Dynamic Feedback**: Real-time error messages, loading states, and success notifications.
 
 ## 🛠️ Tech Stack
 
-- **Backend**: Node.js, Express, TypeScript, PostgreSQL (pg), Swagger
-- **Frontend**: React, TypeScript, Vite, Axios, Lucide Icons
-- **Database**: PostgreSQL (or pg-mem for local demo)
+- **Frontend**: React (Vite), TypeScript, CSS Modules, Axios, Lucide Icons
+- **Backend**: Node.js, Express, TypeScript
+- **Database**: PostgreSQL (Production), pg-mem (Test)
+- **Deployment**: Render (Backend & DB), Netlify (Frontend)
 
 ## 📂 Project Structure
 
@@ -42,53 +51,45 @@ ticket-booking-system/
 │   │   ├── context/       # Global State
 ```
 
-## ⚙️ Setup Instructions
+## 🔑 Account Credentials
 
-### Prerequisites
-- Node.js (v18+)
+| Role | Email | Password | Access |
+| :--- | :--- | :--- | :--- |
+| **Admin** | `ss0068@srmist.edu.in` | `Hello@2002` | Create Shows, Reset Data |
+| **User** | *(Register new)* | *(Any)* | Book Tickets |
 
-### 1. Database Setup
-**No installation required for Demo Mode.**
-(Optional: If using real Postgres, create a DB named `ticket_system` and update `.env`)
+> **Tip**: Use the **"Demo Mode"** button on the Login/Register page to instantly sign in as Admin.
 
-### 2. Backend Setup
+## ⚙️ Local Setup
+
+### 1. Backend
 ```bash
 cd backend
+# Create .env file with DATABASE_URL or set USE_MOCK_DB=true
 npm install
-# Start Server (Auto-seeds in-memory DB)
 npm run dev
+# Server starts on port 5000
 ```
 
-### 3. Frontend Setup
+### 2. Frontend
 ```bash
 cd frontend
 npm install
 npm run dev
+# App opens at http://localhost:5173
 ```
 
-## 🔒 Concurrency Explanation
-The system uses **Pessimistic Locking** via PostgreSQL.
-When a user attempts to "Hold" a seat:
-1. A transaction begins.
-2. `SELECT ... FOR UPDATE` locks the specific seat rows.
-3. If seats are `AVAILABLE` (or expired), they are updated to `PENDING` with a timestamp.
-4. Transaction commits.
-This ensures that even if 100 users click "Book" continuously, only one will succeed in acquiring the lock and updating the status.
+## 🧠 System Architecture
 
-*Note: In Demo Mode (In-Memory), concurrency is handled by the single-threaded nature of the Node.js event loop + async execution serialization, effectively mimicking safe execution.*
+- **Pessimistic Locking**: The system uses database-level row locking to handle concurrent requests. If two users try to book the same seat at the exact same millisecond, the database serializes these requests—one succeeds, the other receives a "Seat already taken" error.
+- **Background Cleanup**: A `setInterval` worker runs every minute to free up seats that were "Held" but not "Confirmed" within 10 minutes.
 
-## 🧪 Testing
-- **Swagger Docs**: Visit `http://localhost:5000/api-docs`
-- **Manual**: Open two browser windows. Try to book the same seat simultaneously. One will fail.
+## ☁️ Deployment
 
-## 📦 Deployment
-### Backend (Render/Railway)
-- Set `DATABASE_URL` env var.
-- Set `USE_MOCK_DB=false`.
-- Build Command: `npm run build`
-- Start Command: `npm start`
+### Live Links
+- **Frontend**: [Active on Netlify](https://YOUR_NETLIFY_URL_HERE)
+- **Backend**: [Active on Render](https://booking-system-ajy9.onrender.com)
+- **Database**: PostgreSQL on Render
 
-### Frontend (Vercel)
-- Set `VITE_API_URL` to your backend URL.
-- Build Command: `npm run build`
-- Output Directory: `dist`
+### Deployment Guide
+For detailed steps on how this stack was deployed, refer to [DEPLOYMENT_NETLIFY.md](./DEPLOYMENT_NETLIFY.md) and [DEPLOYMENT_DB.md](./DEPLOYMENT_DB.md).

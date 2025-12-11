@@ -5,11 +5,13 @@
 The system follows a typical **Client-Server Architecture** using a REST API.
 
 ### Components:
-1.  **Client (Frontend)**: built with React & TypeScript. It handles user interactions, specific seat selection state, and communicates with the backend via HTTP.
-2.  **Load Balancer (Hypothetical)**: In a production scaling scenario (RedBus level), Nginx or AWS ALB would distribute requests.
-3.  **API Server (Backend)**: Built with Node.js & Express. It is stateless, allowing horizontal scaling. It handles authentication, booking logic, and race-condition prevention.
-4.  **Database**: PostgreSQL. Acts as the single source of truth for seat availability.
-5.  **Background Worker**: A lightweight process (implemented via `setInterval` or external Cron) that cleans up expired `PENDING` bookings.
+1.  **Client (Frontend)**: built with React & TypeScript. Handles Authentication (JWT), responsive Admin Dashboard, and Booking Interface.
+2.  **Load Balancer**: (Managed by Cloud Platform/Render).
+3.  **API Server (Backend)**: Built with Node.js & Express.
+    - **Auth Middleware**: Verifies JWT tokens on protected routes.
+    - **Admin Middleware**: Ensures only admins can create shows/reset data.
+4.  **Database**: PostgreSQL (Production) or pg-mem (Test).
+5.  **Background Worker**: A lightweight `setInterval` process that cleans up expired `PENDING` bookings every 60 seconds.
 
 ```mermaid
 graph TD
@@ -30,12 +32,25 @@ graph TD
 ## 2. Database Design & Scalability
 
 ### Schema
+- **Users**: Stores user credentials and roles.
+    - `id`: PK (Serial)
+    - `name`: String
+    - `email`: String (Unique)
+    - `password`: String (Bcrypt Hash)
+    - `role`: Enum (USER, ADMIN)
+
 - **Shows**: Stores event metadata (Movie/Bus/Doctor).
+    - `id`: PK
+    - `name`: String
+    - `type`: Enum (SHOW, BUS, DOCTOR)
+    - `total_seats`: Integer
+
 - **Seats**: The granular unit of inventory.
     - `id`: PK
     - `show_id`: FK
+    - `label`: String (e.g., "A1", "L1", "10:00")
     - `status`: Enum (AVAILABLE, PENDING, BOOKED)
-    - `version`: Integer (for Optimistic Locking - optional)
+    - `user_id`: FK (Nullable, holder of the seat)
     - `expires_at`: Timestamp (for cleanup)
 
 ### Scalability Strategy
