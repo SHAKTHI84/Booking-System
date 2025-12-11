@@ -36,7 +36,7 @@ async function diagnose() {
 
         // 3. Trigger Seed
         console.log('\n--- Triggering Force Seed (/api/debug/seed) ---');
-        const seed = await request('POST', '/debug/seed');
+        const seed = await request('GET', '/debug/seed');
         console.log(JSON.stringify(seed, null, 2));
 
     } catch (err) {

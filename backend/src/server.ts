@@ -30,10 +30,13 @@ import { specs } from './swagger';
 import { seedDataInternal } from './db/seedInternal';
 
 // Use Routes
-// Mount on BOTH paths to handle successful/missing '/api' prefix in env vars
-app.use('/auth', authRoutes);     // For calls to base/auth
-app.use('/api/auth', authRoutes); // For calls to base/api/auth
-app.use('/api/debug', debugRoutes); // Debug Utils (Before /api to prevent capture)
+app.use('/auth', authRoutes);
+app.use('/api/auth', authRoutes);
+
+// Move Debug to Root to avoid /api collisions
+console.log('Mounting /debug routes...');
+app.use('/debug', debugRoutes);
+
 app.use('/api', apiRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
