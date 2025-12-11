@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useGlobal } from '../context/GlobalContext';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api';
 
@@ -18,6 +19,7 @@ interface ShowDetail {
 }
 
 const Booking = () => {
+    const { user } = useGlobal();
     const { id } = useParams();
     const navigate = useNavigate();
     const [show, setShow] = useState<ShowDetail | null>(null);
@@ -124,7 +126,7 @@ const Booking = () => {
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
             <div className="glass-panel" style={{ padding: '2rem', marginBottom: '2rem' }}>
                 <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{show.name}</h1>
-                <p className="opacity-70">User ID: {userId}</p>
+                <p className="opacity-70">Booking for: <span style={{ color: '#fbbf24', fontWeight: 'bold' }}>{user?.name || 'Guest'}</span></p>
             </div>
 
             <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
@@ -195,7 +197,7 @@ const Booking = () => {
 
                     <div style={{ marginBottom: '1rem' }}>
                         <p>Selected: {selectedSeats.length > 0 ? selectedSeats.join(', ') : 'None'}</p>
-                        <p style={{ marginTop: '0.5rem' }}>Total: ${selectedSeats.length * 10}</p>
+                        <p style={{ marginTop: '0.5rem' }}>Total: ₹{selectedSeats.length * 150}</p>
                     </div>
 
                     {error && (
