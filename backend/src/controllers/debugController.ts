@@ -23,45 +23,48 @@ export const getDebugStatus = async (req: Request, res: Response) => {
 
 export const forceSeedSeats = async (req: Request, res: Response) => {
     try {
-        console.log('🌱 Manual Seed Triggered...');
+        console.log('🌱 Manual Seed Triggered for ALL Shows...');
         let totalCreated = 0;
+        let showsFixed = 0;
 
-        // 1. Movie Seats (Avengers)
-        const show1 = await query("SELECT id FROM shows WHERE type = 'SHOW' LIMIT 1");
-        if (show1.rows.length > 0) {
-            const sId = show1.rows[0].id;
-            const rows = ['A', 'B', 'C', 'D', 'E'];
-            for (const row of rows) {
-                for (let i = 1; i <= 10; i++) {
-                    // Use ON CONFLICT DO NOTHING to avoid duplicates if checking is bypassed
-                    await query(`INSERT INTO seats (show_id, label, status) VALUES ($1, $2, 'AVAILABLE') ON CONFLICT (show_id, label) DO NOTHING`, [sId, `${row}${i}`]);
+        const allShows = await query('SELECT * FROM shows');
+
+        for (const show of allShows.rows) {
+            const seats = await query('SELECT count(*) FROM seats WHERE show_id = $1', [show.id]);
+            if (parseInt(seats.rows[0].count) > 0) continue; // Skip if already has seats
+
+            showsFixed++;
+            const sId = show.id;
+            const type = show.type;
+            const totalSeats = show.total_seats || 50; // Fallback
+
+            if (type === 'SHOW') {
+                const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+                for (let r = 0; r < rows.length; r++) {
+                    for (let i = 1; i <= 10; i++) {
+                        if (r * 10 + i > totalSeats) break;
+                        await query(`INSERT INTO seats (show_id, label, status) VALUES ($1, $2, 'AVAILABLE')`, [sId, `${rows[r]}${i}`]);
+                        totalCreated++;
+                    }
+                }
+            } else if (type === 'BUS') {
+                const count = totalSeats / 2;
+                for (let i = 1; i <= count; i++) {
+                    await query(`INSERT INTO seats (show_id, label, status) VALUES ($1, $2, 'AVAILABLE')`, [sId, `L${i}`]);
+                    await query(`INSERT INTO seats (show_id, label, status) VALUES ($1, $2, 'AVAILABLE')`, [sId, `R${i}`]);
+                    totalCreated++;
+                }
+            } else if (type === 'DOCTOR') {
+                for (let i = 0; i < totalSeats; i++) {
+                    const hour = 9 + i;
+                    const label = `${hour}:00`;
+                    await query(`INSERT INTO seats (show_id, label, status) VALUES ($1, $2, 'AVAILABLE')`, [sId, label]);
                     totalCreated++;
                 }
             }
         }
 
-        // 2. Bus Seats
-        const show2 = await query("SELECT id FROM shows WHERE type = 'BUS' LIMIT 1");
-        if (show2.rows.length > 0) {
-            const bId = show2.rows[0].id;
-            for (let i = 1; i <= 15; i++) {
-                await query(`INSERT INTO seats (show_id, label, status) VALUES ($1, $2, 'AVAILABLE') ON CONFLICT (show_id, label) DO NOTHING`, [bId, `L${i}`]);
-                await query(`INSERT INTO seats (show_id, label, status) VALUES ($1, $2, 'AVAILABLE') ON CONFLICT (show_id, label) DO NOTHING`, [bId, `R${i}`]);
-                totalCreated++;
-            }
-        }
-
-        // 3. Doctor Slots
-        const show3 = await query("SELECT id FROM shows WHERE type = 'DOCTOR' LIMIT 1");
-        if (show3.rows.length > 0) {
-            const dId = show3.rows[0].id;
-            for (let i = 9; i < 19; i++) {
-                await query(`INSERT INTO seats (show_id, label, status) VALUES ($1, $2, 'AVAILABLE') ON CONFLICT (show_id, label) DO NOTHING`, [dId, `${i}:00`]);
-                totalCreated++;
-            }
-        }
-
-        res.json({ message: 'Seeding attempt complete', seatsCreated: totalCreated });
+        res.json({ message: 'Seeding attempt complete', showsFixed, seatsCreated: totalCreated });
 
     } catch (err: any) {
         console.error(err);
