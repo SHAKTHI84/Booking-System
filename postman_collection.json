@@ -1,0 +1,84 @@
+{
+    "info": {
+        "name": "Ticket Booking System",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Health Check",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:5000/health",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "5000",
+                    "path": [
+                        "health"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Create Show",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"Test Bus Trip\",\n    \"type\": \"BUS\",\n    \"start_time\": \"2024-12-25T10:00:00Z\",\n    \"total_seats\": 40\n}"
+                },
+                "url": "http://localhost:5000/api/shows"
+            }
+        },
+        {
+            "name": "Get Shows",
+            "request": {
+                "method": "GET",
+                "url": "http://localhost:5000/api/shows"
+            }
+        },
+        {
+            "name": "Hold Seats",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"showId\": 1,\n    \"seatLabels\": [\"A1\", \"A2\"],\n    \"userId\": \"user123\"\n}"
+                },
+                "url": "http://localhost:5000/api/bookings/hold"
+            }
+        },
+        {
+            "name": "Confirm Booking",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"showId\": 1,\n    \"seatLabels\": [\"A1\", \"A2\"],\n    \"userId\": \"user123\"\n}"
+                },
+                "url": "http://localhost:5000/api/bookings/confirm"
+            }
+        }
+    ]
+}
