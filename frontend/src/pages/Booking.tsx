@@ -135,11 +135,11 @@ const Booking = () => {
 
                     {/* Layout Logic */}
                     {show.type === 'BUS' ? (
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                        <div className="bus-container">
                             <div style={{ width: '100%', padding: '1rem', background: '#334155', borderRadius: '8px', textAlign: 'center', color: '#94a3b8', fontWeight: 'bold' }}>
                                 🚌 Front / Driver
                             </div>
-                            <div style={{ display: 'flex', gap: '3rem' }}>
+                            <div className="bus-seats-row">
                                 {/* Left Column */}
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.8rem' }}>
                                     {show.seats.filter(s => s.label.startsWith('L')).map(seat => renderSeat(seat))}
@@ -154,7 +154,7 @@ const Booking = () => {
                         </div>
                     ) : (
                         // Theater / Doctor Layout
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <div className="theater-container">
                             {show.type === 'SHOW' && (
                                 <div style={{
                                     width: '80%', height: '8px', background: '#cbd5e1', borderRadius: '4px',
@@ -164,11 +164,7 @@ const Booking = () => {
                                     SCREEN
                                 </div>
                             )}
-                            <div style={{
-                                display: 'grid',
-                                gridTemplateColumns: 'repeat(6, 1fr)', // Fixed width for theater to look somewhat shaped
-                                gap: '0.8rem'
-                            }}>
+                            <div className="theater-grid">
                                 {show.seats.map(seat => renderSeat(seat))}
                             </div>
                         </div>

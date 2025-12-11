@@ -93,3 +93,70 @@ a {
   text-decoration: none;
   color: inherit;
 }
+
+/* Mobile Responsiveness & Layout Utilities */
+@media (max-width: 768px) {
+  #root {
+    padding: 1rem;
+  }
+
+  .glass-panel {
+    padding: 1rem !important;
+    /* Override inline styles if needed */
+  }
+
+  h1 {
+    font-size: 1.8rem !important;
+  }
+}
+
+/* Bus Layout */
+.bus-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.bus-seats-row {
+  display: flex;
+  gap: 3rem;
+}
+
+@media (max-width: 600px) {
+  .bus-seats-row {
+    gap: 1rem;
+    /* Smaller aisle on mobile */
+  }
+}
+
+/* Theater Layout */
+.theater-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  overflow-x: auto;
+  /* Allow scroll if too wide */
+  padding-bottom: 1rem;
+}
+
+.theater-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.8rem;
+}
+
+@media (max-width: 480px) {
+  .theater-grid {
+    gap: 0.4rem;
+    /* Tighter grid */
+  }
+
+  .theater-grid button {
+    min-width: 32px !important;
+    height: 32px !important;
+    font-size: 0.8rem;
+  }
+}
