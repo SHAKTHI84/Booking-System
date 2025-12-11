@@ -33,9 +33,8 @@ const Login = () => {
         } catch (err: any) {
             console.error('Demo Login Error:', err);
             const status = err.response?.status;
-            const statusText = err.response?.statusText;
-            const dataError = err.response?.data?.error;
-            setError(`Demo Login Failed: ${dataError || statusText || 'Network Error'} (${status || 'No Status'})`);
+            const url = err.config?.baseURL + err.config?.url;
+            setError(`Failed at ${url} (${status}) - ${err.message}`);
         }
     };
 
