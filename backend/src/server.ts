@@ -33,6 +33,7 @@ import { seedDataInternal } from './db/seedInternal';
 // Mount on BOTH paths to handle successful/missing '/api' prefix in env vars
 app.use('/auth', authRoutes);     // For calls to base/auth
 app.use('/api/auth', authRoutes); // For calls to base/api/auth
+app.use('/api/debug', debugRoutes); // Debug Utils (Before /api to prevent capture)
 app.use('/api', apiRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
