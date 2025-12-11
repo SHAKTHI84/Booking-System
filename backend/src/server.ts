@@ -23,6 +23,7 @@ app.get('/health', (req, res) => {
 
 import apiRoutes from './routes/api';
 import authRoutes from './routes/auth';
+import debugRoutes from './routes/debug';
 import { query, initializeDB } from './db';
 import swaggerUi from 'swagger-ui-express';
 import { specs } from './swagger';
