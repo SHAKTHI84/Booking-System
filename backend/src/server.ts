@@ -22,7 +22,7 @@ app.get('/health', (req, res) => {
 });
 
 import apiRoutes from './routes/api';
-import { query } from './db';
+import { query, initializeDB } from './db';
 import swaggerUi from 'swagger-ui-express';
 import { specs } from './swagger';
 import { seedDataInternal } from './db/seedInternal';
@@ -30,9 +30,6 @@ import { seedDataInternal } from './db/seedInternal';
 // Use Routes
 app.use('/api', apiRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
-
-// Seed on startup if needed (esp for mock db)
-seedDataInternal();
 
 // Background Worker: Cleanup Expired Seats every 1 minute
 setInterval(async () => {
@@ -50,6 +47,18 @@ setInterval(async () => {
     }
 }, 60000);
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+const startServer = async () => {
+    // Ensure DB is ready (Real DB: Create Tables / Seed; Mock DB: No-op)
+    await initializeDB();
+
+    // If Mock, we explicitly seed here (legacy/separate seed script)
+    if (process.env.USE_MOCK_DB === 'true') {
+        seedDataInternal();
+    }
+
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+};
+
+startServer();

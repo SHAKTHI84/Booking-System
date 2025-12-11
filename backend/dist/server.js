@@ -28,8 +28,6 @@ const seedInternal_1 = require("./db/seedInternal");
 // Use Routes
 app.use('/api', api_1.default);
 app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_1.specs));
-// Seed on startup if needed (esp for mock db)
-(0, seedInternal_1.seedDataInternal)();
 // Background Worker: Cleanup Expired Seats every 1 minute
 setInterval(async () => {
     try {
@@ -44,6 +42,15 @@ setInterval(async () => {
         console.error('[Cleanup] Error releasing seats:', err);
     }
 }, 60000);
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+const startServer = async () => {
+    // Ensure DB is ready (Real DB: Create Tables / Seed; Mock DB: No-op)
+    await (0, db_1.initializeDB)();
+    // If Mock, we explicitly seed here (legacy/separate seed script)
+    if (process.env.USE_MOCK_DB === 'true') {
+        (0, seedInternal_1.seedDataInternal)();
+    }
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+};
+startServer();
