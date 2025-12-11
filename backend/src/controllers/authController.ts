@@ -41,14 +41,14 @@ export const login = async (req: Request, res: Response) => {
 
         const result = await query('SELECT * FROM users WHERE email = $1', [email]);
         if (result.rows.length === 0) {
-            return res.status(400).json({ error: 'Invalid credentials' });
+            return res.status(400).json({ error: 'Email or Password does not exist' });
         }
 
         const user = result.rows[0];
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
-            return res.status(400).json({ error: 'Invalid credentials' });
+            return res.status(400).json({ error: 'Email or Password does not exist' });
         }
 
         const token = generateToken(user);

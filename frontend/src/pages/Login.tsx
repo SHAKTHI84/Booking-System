@@ -27,9 +27,7 @@ const Login = () => {
             navigate(res.data.user.role === 'ADMIN' ? '/admin' : '/');
         } catch (err: any) {
             console.error('Login Error:', err);
-            const status = err.response?.status;
-            const url = err.config?.baseURL + err.config?.url;
-            setError(`Failed at ${url} (${status}) - ${err.message}`);
+            setError(err.response?.data?.error || 'Login Failed');
         }
     };
 
